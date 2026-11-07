@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { imageCoverScale, rotatedFitScale, visibleImageBounds } from "@/lib/profile-image-source";
+import { encodeImageCanvas } from "@/lib/image-compression";
 
 const VIEW = 280;
 const MIN_ZOOM = 0.5;
@@ -121,7 +122,7 @@ export function ImageCropDialog({ file, shape = "circle", outputSize = 512, onCa
     drag.current = null;
   };
 
-  const save = () => {
+  const save = async () => {
     if (!img || view <= 0 || busy || encoding) return;
     setEncoding(true);
     const canvas = document.createElement("canvas");
@@ -134,7 +135,9 @@ export function ImageCropDialog({ file, shape = "circle", outputSize = 512, onCa
     ctx.translate((view / 2 + offset.x) * s, (view / 2 + offset.y) * s);
     ctx.rotate(rotation * Math.PI / 180);
     ctx.drawImage(img, bounds.x, bounds.y, bounds.width, bounds.height, -w * s / 2, -h * s / 2, w * s, h * s);
-    canvas.toBlob((blob) => { setEncoding(false); if (blob?.type === "image/webp") onDone(blob); else setLoadError(true); }, "image/webp", quality);
+    try { onDone(await encodeImageCanvas(canvas, quality)); }
+    catch { setLoadError(true); }
+    finally { setEncoding(false); }
   };
 
   const step = (d: number) => setZoom((z) => Math.min(MAX_ZOOM, Math.max(minZoom, +(z + d).toFixed(2))));

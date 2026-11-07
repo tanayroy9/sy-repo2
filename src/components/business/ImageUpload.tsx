@@ -5,7 +5,7 @@ import { ImageCropDialog } from "@/components/shared/ImageCropDialog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { originalImageUrl } from "@/lib/profile-image-source";
-import { compressImage as compressToWebP } from "@/lib/image-compression";
+import { compressImage, imageFileExtension } from "@/lib/image-compression";
 
 interface Props {
   bucket?: string;
@@ -78,10 +78,10 @@ const ImageUpload = ({
     if (crop && file.type.startsWith("image/") && file.type !== "image/svg+xml") {
       setOpening(true);
       try {
-        const source = await compressToWebP(file, 2400, 0.9);
+        const source = await compressImage(file, 2400, 0.9);
         compressedSource.current = true;
         setHasOriginal(true);
-        setCropFile(new File([source], "original.webp", { type: "image/webp" }));
+        setCropFile(new File([source], `original.${imageFileExtension(source)}`, { type: source.type }));
       } catch (error) { toast.error(error instanceof Error ? error.message : "Billedet kunne ikke åbnes"); }
       finally { setOpening(false); }
       return;
@@ -146,32 +146,33 @@ const ImageUpload = ({
 
       // SVG kan ikke komprimeres via canvas — upload originalt
       let uploadBody: Blob | File = file;
-      let ext = "webp";
-      if (file.type === "image/svg+xml") {
-        ext = "svg";
-      } else if (preCropped) {
-        uploadBody = file;
-      } else {
-        uploadBody = await compressToWebP(file, maxDimension, quality);
+      if (file.type !== "image/svg+xml" && !preCropped) {
+        uploadBody = await compressImage(file, maxDimension, quality);
       }
+      const ext = imageFileExtension(uploadBody);
       const imageId = `${Date.now()}-${crypto.randomUUID()}`;
-      const fileName = `${safeFolder}/${preCropped && hasOriginal ? "crop-" : ""}${imageId}.${ext}`;
+      let cropPrefix = "";
 
       // Preserve a full, compressed source alongside each crop, independent of browser storage.
       if (preCropped && cropFile && hasOriginal) {
-        const original = compressedSource.current ? cropFile : await compressToWebP(cropFile, 2400, 0.9);
-        const { error: sourceError } = await supabase.storage.from(bucket).upload(`${safeFolder}/original-${imageId}.webp`, original, {
-          cacheControl: "31536000", upsert: false, contentType: "image/webp",
+        const original = compressedSource.current ? cropFile : await compressImage(cropFile, 2400, 0.9);
+        const originalExt = imageFileExtension(original);
+        cropPrefix = "crop-";
+        const { error: sourceError } = await supabase.storage.from(bucket).upload(`${safeFolder}/original-${imageId}.${originalExt}`, original, {
+          cacheControl: "31536000", upsert: false, contentType: original.type,
         });
         if (sourceError) throw sourceError;
+        // The source can retain a different format when reopened on another browser.
+        cropPrefix += `${imageId}.source-${originalExt}.`;
       }
+      const fileName = `${safeFolder}/${cropPrefix || `${imageId}.`}${ext}`;
 
       const { error } = await supabase.storage.from(bucket).upload(fileName, uploadBody, {
         cacheControl: "31536000",
         // Filnavnet er altid unikt. Undgå upsert, da Storage ellers kræver
         // både INSERT-, SELECT- og UPDATE-policy og kan fejle med RLS.
         upsert: false,
-        contentType: ext === "webp" ? "image/webp" : (ext === "svg" ? "image/svg+xml" : file.type),
+        contentType: uploadBody.type,
       });
 
       if (error) throw error;
@@ -269,7 +270,7 @@ const ImageUpload = ({
           onCancel={() => { if (!uploading) setCropFile(null); }}
           onDone={(blob) => {
             if (uploading) return;
-            void uploadFile(new File([blob], "billede.webp", { type: "image/webp" }), true);
+            void uploadFile(new File([blob], `billede.${imageFileExtension(blob)}`, { type: blob.type }), true);
           }}
         />
       ) : null}

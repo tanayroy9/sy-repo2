@@ -1,5 +1,8 @@
 /** Cropped images and their uncropped source share a stable storage identifier. */
 export function originalImageUrl(url: string): string | null {
+  if (/\/crop-[^/]+\.source-(webp|png|jpg)\.(webp|png|jpg)(?:\?|$)/.test(url)) {
+    return url.replace(/\/crop-([^/]+)\.source-(webp|png|jpg)\.(webp|png|jpg)/, "/original-$1.$2");
+  }
   return /\/crop-[^/]+\.webp(?:\?|$)/.test(url)
     ? url.replace(/\/crop-([^/]+)\.webp/, "/original-$1.webp")
     : null;

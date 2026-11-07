@@ -8,6 +8,12 @@ describe("original profile images", () => {
   it("does not claim a legacy crop has an original", () => {
     expect(originalImageUrl("https://example.test/assets/avatar-123.webp")).toBeNull();
   });
+  it("reopens a PNG original for a PNG fallback crop", () => {
+    expect(originalImageUrl("https://example.test/assets/crop-abc.source-png.png")).toBe("https://example.test/assets/original-abc.png");
+  });
+  it("reopens a WebP original after cropping in a PNG-only browser", () => {
+    expect(originalImageUrl("https://example.test/assets/crop-abc.source-webp.png?token=test")).toBe("https://example.test/assets/original-abc.webp?token=test");
+  });
   it("fits all corners of a square inside a circular avatar", () => {
     expect(imageFitScale(400, 400, 280, true) * Math.hypot(400, 400)).toBeCloseTo(280);
   });
