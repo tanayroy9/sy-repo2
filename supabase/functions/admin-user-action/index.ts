@@ -42,7 +42,13 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const action = String(body?.action || "");
     const userId = String(body?.user_id || "");
-    const redirectTo = body?.redirect_to ? String(body.redirect_to) : undefined;
+    const redirectTo = (() => {
+      if (!body?.redirect_to) return undefined;
+      try {
+        const u = new URL(String(body.redirect_to));
+        return u.protocol === "https:" && /^((.+\.)?serviceydere\.dk|(.+\.)?lovable\.app|(.+\.)?lovableproject\.com)$/.test(u.hostname) ? u.toString() : undefined;
+      } catch { return undefined; }
+    })();
     if (!userId || !["password_reset", "magic_link", "impersonate", "delete_user", "suspend", "unsuspend"].includes(action)) {
       return new Response(JSON.stringify({ error: "Invalid input" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
