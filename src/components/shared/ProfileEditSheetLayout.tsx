@@ -65,8 +65,8 @@ export function ProfileEditSheetLayout({
           <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
             <span className="text-[11px] text-muted-foreground">{dirty ? "Du har ændringer, der ikke er gemt" : "Ingen ændringer endnu"}</span>
             <div className="flex gap-2">
-              <Button variant="outline" className="flex-1 sm:flex-none" onClick={onCancel} disabled={saving}>Annullér</Button>
-              <Button className="flex-1 sm:flex-none" onClick={onSave} disabled={!dirty || saving}>{saveContent}</Button>
+              <Button variant="outline" className="min-h-11 flex-1 sm:flex-none" onClick={onCancel} disabled={saving}>Annullér</Button>
+              <Button className="min-h-11 flex-1 sm:flex-none" onClick={onSave} disabled={!dirty || saving}>{saveContent}</Button>
             </div>
           </div>
         </SheetFooterBar>

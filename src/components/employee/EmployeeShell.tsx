@@ -189,6 +189,7 @@ export const EmployeeShell = ({
   /* ---------------- Notifikationer ---------------- */
   const notificationContent = (
     <EmployeeNotifications
+      onClose={isMobile ? () => setNotificationsOpen(false) : undefined}
       notifications={routeNotifications as EmployeeRouteNotification[]}
       onOpen={(item: EmployeeRouteNotification) => { if (!item.read_at) markNotificationRead.mutate(item.id); }}
       onMarkAllRead={() => markAllNotificationsRead.mutate()}

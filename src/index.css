@@ -1731,6 +1731,11 @@ body[data-cookie-banner="open"] button[aria-label="Åbn livechat"] { opacity: 0;
 
 .toaster { z-index: var(--z-alert) !important; }
 
+/* Limit floating pickers to the actual space beside their trigger, not the full screen. */
+.ui-popover {
+  max-height: min(calc(100dvh - 1rem), var(--radix-popover-content-available-height, 100dvh)) !important;
+}
+
 /* Ensartet størrelse i alle panel-vinduer (Rediger rute, Stops, Opret rute,
    Opret bestilling, Opret kunde) — undgår at felter er for store/små. */
 @layer components {
@@ -1753,6 +1758,11 @@ body[data-cookie-banner="open"] button[aria-label="Åbn livechat"] { opacity: 0;
   [role="menuitemcheckbox"],
   [role="menuitemradio"],
   [role="option"] { min-height: 44px; }
+}
+
+/* Tablet and landscape phone forms must not inherit desktop's 40 px footer controls. */
+@media (max-width: 1279px), (any-pointer: coarse) {
+  .planner-overlay-footer button { min-height: 44px; }
 }
 
 @media (max-width: 639px) {

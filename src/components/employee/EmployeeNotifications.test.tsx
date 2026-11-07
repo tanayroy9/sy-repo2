@@ -5,6 +5,14 @@ import { EmployeeNotifications } from "./EmployeeNotifications";
 afterEach(cleanup);
 const item = { id: "test", message: "Ruten er opdateret", created_at: new Date().toISOString(), read_at: null, route_id: "route", route_stop_id: null };
 describe("employee notification interactions", () => {
+  it("closes the mobile notification window without marking or deleting messages", () => {
+    const onClose = vi.fn(); const onDeleteAll = vi.fn(); const onMarkAllRead = vi.fn();
+    render(<EmployeeNotifications notifications={[]} onOpen={vi.fn()} onMarkAllRead={onMarkAllRead} onDelete={vi.fn()} onDeleteAll={onDeleteAll} onClose={onClose} />);
+    fireEvent.click(screen.getByRole("button", { name: "Luk notifikationer" }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onDeleteAll).not.toHaveBeenCalled();
+    expect(onMarkAllRead).not.toHaveBeenCalled();
+  });
   it("opens the selected notification through its native button", () => {
     const onOpen = vi.fn();
     render(<EmployeeNotifications notifications={[item]} onOpen={onOpen} onMarkAllRead={vi.fn()} onDelete={vi.fn()} onDeleteAll={vi.fn()} />);

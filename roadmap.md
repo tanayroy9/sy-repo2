@@ -1,5 +1,10 @@
 # Master Audit & Refinement — Serviceydere.dk
 
+## 7. nov. — Udvidet appgennemgang
+- [x] Faktisk medarbejderprofil, notifikationer, sidemenu, statistik og alle fem perioder/datoknapper kliktestet ved 320/390/844/820 px. Syv kundesider ved 390/820 px samt rollevalg, tre loginindgange og billedflow gentestet. Ingen runtimefejl; ingen virksomhedsdata oprettet.
+- [x] Bekræftet datovælger gik under skærmen (320×568: bund 714 px; efter rettelse 560 px). Fælles popovers begrænses til faktisk ledig plads med intern rulning. Profil-/plannerbundknapper var 40 px på tablet/vandret mobil og er nu 44 px; notifikationer har synlig lukkeknap. Kalenderens navigationslabels er danske. Ti regressionstests bestået; build OK.
+- [ ] Fuld virksomheds-/rutedatagennemgang og fysiske enheder er fortsat blokeret af manglende egnet virksomhedskonto og telefonadgang.
+
 ## 7. nov. — iOS/Android og kompakte mobilvinduer
 - [x] Kompakt rollevalg og alle tre loginindgange afprøvet ved 320/390/844/820 px. Android-tilbage respekterer routerhistorik og åbne bekræftelsesvinduer; seks regeltests bestået. Faktisk native tilbageknap kræver telefon.
 - [x] Billedgenåbning bruger almindelig billedafkodning uden createImageBitmap. Valgfri luftregistrering tåler canvasfejl; gemmefejl vises og kan prøves igen. Autentificeret upload, retry og originalgenåbning efter remount bestået; testpreview fjernet.

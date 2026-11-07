@@ -1,7 +1,7 @@
 import { NoItemsIcon } from "@/components/shared/NoItemsIcon";
 import { formatDistanceToNow, format, parseISO } from "date-fns";
 import { da } from "date-fns/locale";
-import { Bell, CheckCheck, MapPin, Route as RouteIcon, Trash2 } from "lucide-react";
+import { Bell, CheckCheck, MapPin, Route as RouteIcon, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -24,9 +24,10 @@ type Props = {
   onDeleteAll: () => void;
   markingAll?: boolean;
   compact?: boolean;
+  onClose?: () => void;
 };
 
-export const EmployeeNotifications = ({ notifications, onOpen, onMarkAllRead, onDelete, onDeleteAll, markingAll, compact }: Props) => {
+export const EmployeeNotifications = ({ notifications, onOpen, onMarkAllRead, onDelete, onDeleteAll, markingAll, compact, onClose }: Props) => {
   const unread = notifications.filter((item) => !item.read_at).length;
   return (
     <div className="flex min-h-0 flex-col bg-card">
@@ -46,6 +47,7 @@ export const EmployeeNotifications = ({ notifications, onOpen, onMarkAllRead, on
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
           )}
+          {onClose && <Button type="button" variant="ghost" size="icon" className="h-11 w-11 shrink-0" onClick={onClose} aria-label="Luk notifikationer"><X className="h-4 w-4" /></Button>}
         </div>
       </div>
       <div className={cn("min-h-0 overflow-y-auto overscroll-contain p-1.5", compact ? "max-h-[min(28rem,calc(100vh-7rem))]" : "max-h-[68dvh]") }>
