@@ -4,6 +4,7 @@ import { generateChatCompletion, GatewayError, PaymentRequiredError, PermissionD
 import { validateArticle, slugify, INTERNAL_LINKS, INDUSTRY_SLUGS, type ArticleDraft } from './quality.ts';
 import { selectTopic, topicIndustry, type TopicCandidate } from './topic-selection.ts';
 import { selectBoost } from './boost-selection.ts';
+import { isTrustedCronCaller } from '../_shared/cron-auth.ts';
 
 // Automatic SEO engine. One daily cron "tick" decides the work for the day; admins can trigger single steps.
 // Every step is bounded, guarded by a unique run key (single-flight + idempotent) and stops on credit/policy errors.
@@ -229,6 +230,9 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json().catch(() => ({}));
     const action = String(body.action ?? 'tick');
+    if (!(await isTrustedCronCaller(req)) && !(await isAdmin(req))) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
     const today = iso(new Date());
     if (action === 'tick') {
       const { data: s } = await db.from('seo_settings').select('*').single();

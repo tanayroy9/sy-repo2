@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
       return json({ error: "Ugyldig forespørgsel" }, 400);
     }
     const returnUrl = new URL(body.returnUrl);
-    if (!/(^|\.)serviceydere\.dk$|lovable\.app$|lovableproject\.com$|^localhost$/.test(returnUrl.hostname)) {
+    if (!/^((.+\.)?serviceydere\.dk|(.+\.)?lovable\.app|(.+\.)?lovableproject\.com|localhost)$/.test(returnUrl.hostname)) {
       return json({ error: "Ugyldig returadresse" }, 400);
     }
 

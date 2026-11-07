@@ -344,6 +344,13 @@
       "when": 1793886839507,
       "tag": "0048_business_smtp_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1794066350230,
+      "tag": "0049_harden_trial_and_seo_cron",
+      "breakpoints": true
     }
   ]
 }

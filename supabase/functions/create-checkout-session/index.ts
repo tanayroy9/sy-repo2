@@ -285,7 +285,8 @@ Deno.serve(async (req) => {
       } else {
         console.error("[create-checkout-session] stripe rejected payload:", {
           message: (stripeErr as Error)?.message,
-          payload: sessionPayload,
+          mode: (sessionPayload as any)?.mode,
+          has_email: Boolean((sessionPayload as any)?.customer_email),
         });
         throw stripeErr;
       }
