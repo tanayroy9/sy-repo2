@@ -497,6 +497,9 @@ const AgendaRoutePillInner = ({ route, onSelect, onOptimize, onDelete, onShowHis
       )}
 
       aria-busy={busy || undefined}
+      style={!isVirtual && !showAsCompleted && !isPast && route.color
+        ? { background: `linear-gradient(100deg, color-mix(in srgb, ${route.color} 11%, hsl(var(--card))) 0%, hsl(var(--card)) 70%)` }
+        : undefined}
     >
       <span aria-hidden className={cn("absolute inset-y-0 left-0", PILL_RAIL_WIDTH)} style={{ backgroundColor: showAsCompleted ? "hsl(var(--success))" : route.color }} />
       {isOver && validation && (
@@ -530,7 +533,17 @@ const AgendaRoutePillInner = ({ route, onSelect, onOptimize, onDelete, onShowHis
           isVirtual || compactLayout ? "cursor-pointer" : "cursor-grab active:cursor-grabbing",
         )}
       >
-        <div className="text-sm font-semibold leading-snug flex flex-wrap items-center gap-1">
+        <div className="text-sm font-semibold leading-snug flex flex-wrap items-center gap-1.5">
+          <span
+            aria-hidden
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-lg"
+            style={{
+              background: `color-mix(in srgb, ${showAsCompleted ? "hsl(var(--success))" : route.color || "hsl(var(--accent))"} 18%, transparent)`,
+              color: showAsCompleted ? "hsl(var(--success))" : route.color || "hsl(var(--accent))",
+            }}
+          >
+            <MapPin className="h-4 w-4" />
+          </span>
           {isVirtual && (
             <span
               className="inline-flex items-center gap-0.5 rounded-sm bg-muted px-1 py-px text-[9px] font-bold uppercase tracking-wide text-muted-foreground shrink-0"
@@ -578,7 +591,10 @@ const AgendaRoutePillInner = ({ route, onSelect, onOptimize, onDelete, onShowHis
           ) : isVirtual ? (
             <span className="font-semibold text-foreground/80">{stopCount} stop</span>
           ) : (
-            <span className="font-semibold text-foreground/80">{completedCount} af {stopCount} udført</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="rounded-full bg-background/80 px-2 py-0.5 font-semibold text-foreground ring-1 ring-border">{stopCount} stop</span>
+              <span className={cn("font-semibold", completedCount > 0 ? "text-success" : "text-foreground/70")}>{completedCount} udført</span>
+            </span>
           )}
           {compactLayout && route.attachedEmployees.length > 0 && (
             <span className="min-w-0 truncate">{route.attachedEmployees.map((e) => e.name.split(" ")[0]).join(", ")}</span>
@@ -620,7 +636,7 @@ const AgendaRoutePillInner = ({ route, onSelect, onOptimize, onDelete, onShowHis
       {showFooter && (
       <div className="col-span-2 -mx-2.5 -mb-2.5 ml-[-0.75rem] flex items-center justify-end gap-1 border-t border-border/70 bg-secondary/20 px-2 py-1" onClick={(e) => e.stopPropagation()}>
       {canOptimizeInline && (
-        <Button variant="outline" size="sm" className="h-11 shrink-0 gap-1 px-2 text-xs" aria-label={`Optimér ${route.name || "ruten"}`} disabled={busy || optimizing} onKeyDown={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); onOptimize(); }}>
+        <Button size="sm" className="h-11 shrink-0 gap-1 border-0 bg-accent px-3 text-xs text-accent-foreground hover:bg-accent/90" aria-label={`Optimér ${route.name || "ruten"}`} disabled={busy || optimizing} onKeyDown={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); onOptimize(); }}>
           {optimizing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}<span>Optimér rute</span>
         </Button>
       )}
@@ -633,7 +649,7 @@ const AgendaRoutePillInner = ({ route, onSelect, onOptimize, onDelete, onShowHis
       </div>
       )}
       {stopCount > 0 && !showAsCompleted && !isVirtual && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[3px] bg-secondary" aria-hidden="true">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-secondary" aria-hidden="true">
           <div
             className="h-full bg-success transition-all duration-500"
             style={{ width: `${progressPct}%` }}
