@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { getStripe, getStripeEnvironment, buildPriceSelection, type BillingPeriod } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "./PaymentTestModeBanner";
 import { Loader2 } from "lucide-react";
+import { isNativeIOS } from "@/lib/native-role";
+import { IosPurchaseNotice } from "./IosPurchaseNotice";
 
 interface Props {
   open: boolean;
@@ -70,6 +72,7 @@ export function StripeCheckoutDialog(props: Props) {
             Sikker betaling via Stripe. Du opkræves ikke før din prøveperiode er slut.
           </DialogDescription>
         </DialogHeader>
+        {isNativeIOS() ? <IosPurchaseNotice /> : <>
         <PaymentTestModeBanner />
         {error && (
           <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
@@ -87,6 +90,7 @@ export function StripeCheckoutDialog(props: Props) {
             </div>
           </div>
         )}
+        </>}
       </DialogContent>
     </Dialog>
   );

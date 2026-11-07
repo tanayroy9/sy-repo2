@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { askConfirm } from "@/components/ConfirmDialogHost";
+import { DeleteOwnAccount } from "@/components/shared/DeleteOwnAccount";
 import { ProfileEditSheetLayout } from "@/components/shared/ProfileEditSheetLayout";
 
 type EmployeeProfile = { id: string; name?: string | null; avatar_url?: string | null };
@@ -34,5 +35,5 @@ export function EmployeeProfileSheet({ open, onOpenChange, employee, userId }: P
     } catch { toast.error("Profilen kunne ikke gemmes", { description: "Kontrollér forbindelsen og prøv igen.", action: { label: "Prøv igen", onClick: () => void save() } }); }
     finally { setSaving(false); }
   };
-  return <ProfileEditSheetLayout open={open} onRequestOpenChange={(next) => next ? onOpenChange(true) : void close()} description="Dit navn og billede vises for dine kolleger og kunder." fieldHint="Stilling, adgang og provision ændres af virksomheden." uploadFolder={`${userId || "employee"}/employee-profile`} avatarUrl={avatarUrl} onAvatarChange={setAvatarUrl} name={name} onNameChange={setName} saving={saving} dirty={dirty} onCancel={() => void close()} onSave={() => void save()} saveContent={saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Gem profil"} />;
+  return <ProfileEditSheetLayout open={open} onRequestOpenChange={(next) => next ? onOpenChange(true) : void close()} description="Dit navn og billede vises for dine kolleger og kunder." fieldHint="Stilling, adgang og provision ændres af virksomheden." uploadFolder={`${userId || "employee"}/employee-profile`} avatarUrl={avatarUrl} onAvatarChange={setAvatarUrl} name={name} onNameChange={setName} saving={saving} dirty={dirty} onCancel={() => void close()} onSave={() => void save()} extra={<DeleteOwnAccount />} saveContent={saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Gem profil"} />;
 }

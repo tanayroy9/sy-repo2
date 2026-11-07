@@ -49,6 +49,7 @@ const STATUS_CONFIG: Record<string, { label: string; variant: "default" | "secon
 };
 
 // Bruger det fælles status-farvesystem så aftaler ser ens ud i hele platformen.
+import { DeleteOwnAccount } from "@/components/shared/DeleteOwnAccount";
 import { STATUS_BADGE_CLASS, STATUS_LABELS } from "@/lib/statusColors";
 const ORDER_STATUS: Record<string, { label: string; color: string; icon: typeof Clock }> = {
   pending:     { label: STATUS_LABELS.pending,     color: STATUS_BADGE_CLASS.pending,     icon: Clock },
@@ -1677,6 +1678,7 @@ const ProfileView = () => {
               <LogOut className="h-3.5 w-3.5 mr-1.5" /> Log ud
             </Button>
           </div>
+          <DeleteOwnAccount />
         </CardContent>
       </Card>
 

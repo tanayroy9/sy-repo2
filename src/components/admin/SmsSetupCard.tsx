@@ -1,3 +1,5 @@
+import { isNativeIOS } from "@/lib/native-role";
+import { IosPurchaseNotice } from "@/components/billing/IosPurchaseNotice";
 import { useCallback, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FunctionsHttpError } from "@supabase/supabase-js";
@@ -215,6 +217,7 @@ function BuySmsDialog({ open, onClose, businessId }: { open: boolean; onClose: (
           <DialogTitle>Køb flere SMS</DialogTitle>
           <DialogDescription>Betal én gang. SMS'erne udløber aldrig. Priser uden moms.</DialogDescription>
         </DialogHeader>
+        {isNativeIOS() ? <IosPurchaseNotice /> : <>
         <PaymentTestModeBanner />
         {error && <p className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
         {!checkout ? (
@@ -248,6 +251,7 @@ function BuySmsDialog({ open, onClose, businessId }: { open: boolean; onClose: (
             </EmbeddedCheckoutProvider>
           </div>
         )}
+        </>}
       </DialogContent>
     </Dialog>
   );

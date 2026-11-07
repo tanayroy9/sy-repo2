@@ -22,6 +22,8 @@ type Props = {
   onCancel: () => void;
   onSave: () => void;
   saveContent: ReactNode;
+  /** Extra content under the form, e.g. account deletion. */
+  extra?: ReactNode;
 };
 
 /**
@@ -30,7 +32,7 @@ type Props = {
  */
 export function ProfileEditSheetLayout({
   open, onRequestOpenChange, description, fieldHint, uploadFolder, avatarUrl,
-  onAvatarChange, name, onNameChange, saving, dirty, onCancel, onSave, saveContent,
+  onAvatarChange, name, onNameChange, saving, dirty, onCancel, onSave, saveContent, extra,
 }: Props) {
   return (
     <Dialog open={open} onOpenChange={onRequestOpenChange}>
@@ -59,6 +61,7 @@ export function ProfileEditSheetLayout({
               </Field>
             </Section>
           </div>
+          {extra}
         </div>
 
         <SheetFooterBar className="pb-[max(0.75rem,env(safe-area-inset-bottom))]">

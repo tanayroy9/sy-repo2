@@ -135,6 +135,8 @@ const PrivacyPolicy = () => (
               <li><strong className="text-foreground">Ret til indsigelse</strong> mod behandling baseret på legitim interesse, og altid mod direkte markedsføring (art. 21).</li>
               <li><strong className="text-foreground">Ret til at tilbagekalde samtykke</strong> til enhver tid (art. 7, stk. 3) — uden at det berører lovligheden af behandling før tilbagekaldelsen.</li>
             </ul>
+            <p><strong className="text-foreground">Slet din konto selv:</strong> Du kan til enhver tid slette din konto direkte i appen og på hjemmesiden under «Rediger profil» › «Slet min konto» (kunder: under din profil). Ejere sletter først virksomheden under Indstillinger. Login og profiloplysninger slettes straks; oplysninger vi eller en virksomhed skal gemme efter bogføringsloven (fx fakturaer i 5 år), gemmes kun så længe loven kræver. Du kan også bede om sletning på <a href="/slet-data" className="text-foreground underline">serviceydere.dk/slet-data</a>.</p>
+            <p><strong className="text-foreground">Apps til iPhone og Android:</strong> Appen bruger kun din placering, mens appen er åben og du kører en rute (aldrig i baggrunden), og kun kamera/billeder når du selv vælger at tage eller vedhæfte et foto. Vi bruger ingen reklame-id'er, sporer dig ikke på tværs af andre apps og hjemmesider og sælger aldrig dine oplysninger. Data sendes krypteret (HTTPS).</p>
             <p>Send din anmodning til <a href="mailto:kontakt@serviceydere.dk" className="text-foreground underline">kontakt@serviceydere.dk</a>. Vi besvarer som udgangspunkt inden for én måned, jf. GDPR art. 12, stk. 3. Vi kan bede om dokumentation for din identitet for at beskytte dine oplysninger.</p>
           </>
         ),

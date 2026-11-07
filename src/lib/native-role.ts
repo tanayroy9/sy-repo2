@@ -23,3 +23,8 @@ export function saveNativeRole(role: NativeRole | null) {
 /** Login page for a chosen role; Auth sends signed-in users to their own panel. */
 const LOGIN_MODE: Record<NativeRole, string> = { owner: "business", employee: "employee", customer: "customer" };
 export const loginPathFor = (role: NativeRole) => `/log-ind?mode=${LOGIN_MODE[role]}&app=1`;
+
+/** iPhone/iPad app: Apple forbids selling digital subscriptions/credits outside In-App Purchase. */
+export const isNativeIOS = () => {
+  try { return Capacitor.isNativePlatform() && Capacitor.getPlatform() === "ios"; } catch { return false; }
+};

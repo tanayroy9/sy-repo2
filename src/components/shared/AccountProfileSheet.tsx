@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { askConfirm } from "@/components/ConfirmDialogHost";
 import { useUpdateProfile } from "@/hooks/useDatabase";
+import { DeleteOwnAccount } from "@/components/shared/DeleteOwnAccount";
 import { ProfileEditSheetLayout } from "@/components/shared/ProfileEditSheetLayout";
 
 type Props = {
@@ -56,5 +57,5 @@ export function AccountProfileSheet({ open, onOpenChange, userId, name: initialN
     }
   };
 
-  return <ProfileEditSheetLayout open={open} onRequestOpenChange={(next) => next ? onOpenChange(true) : void close()} description="Dit navn og billede bruges på din konto i virksomhedspanelet." fieldHint="Virksomhedens navn og offentlige oplysninger ændres fortsat under Indstillinger." uploadFolder={`${userId || "account"}/account-profile`} avatarUrl={avatarUrl} onAvatarChange={setAvatarUrl} name={name} onNameChange={setName} saving={saving} dirty={dirty} onCancel={() => void close()} onSave={() => void save()} saveContent={saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Gem profil"} />;
+  return <ProfileEditSheetLayout open={open} onRequestOpenChange={(next) => next ? onOpenChange(true) : void close()} description="Dit navn og billede bruges på din konto i virksomhedspanelet." fieldHint="Virksomhedens navn og offentlige oplysninger ændres fortsat under Indstillinger." uploadFolder={`${userId || "account"}/account-profile`} avatarUrl={avatarUrl} onAvatarChange={setAvatarUrl} name={name} onNameChange={setName} saving={saving} dirty={dirty} onCancel={() => void close()} onSave={() => void save()} extra={<DeleteOwnAccount />} saveContent={saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Gem profil"} />;
 }
