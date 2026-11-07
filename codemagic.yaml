@@ -10,7 +10,7 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: app.lovable.p3396f095cb5d439d8707af0033c7fb66
+        bundle_identifier: dk.serviceydere.app
       node: 20
       xcode: latest
       vars:

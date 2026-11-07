@@ -4,7 +4,7 @@ android {
     namespace = "app.lovable.p3396f095cb5d439d8707af0033c7fb66"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "app.lovable.p3396f095cb5d439d8707af0033c7fb66"
+        applicationId "dk.serviceydere.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

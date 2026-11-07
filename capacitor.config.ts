@@ -6,7 +6,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 const isRelease = process.env.CAP_RELEASE === "1";
 
 const config: CapacitorConfig = {
-  appId: "app.lovable.p3396f095cb5d439d8707af0033c7fb66",
+  appId: "dk.serviceydere.app",
   appName: "Serviceydere",
   webDir: "dist",
   backgroundColor: "#ffffff",
