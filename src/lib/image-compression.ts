@@ -26,8 +26,12 @@ export function imageFileExtension(blob: Blob): "webp" | "png" | "svg" | "jpg" {
   }
 }
 
-/** Bound decoded image memory before editing, preferring WebP with a PNG fallback. */
-export async function compressImage(file: Blob, maxDimension: number, quality = 0.82): Promise<Blob> {
+/** Decode using the universally supported image element, not createImageBitmap. */
+export async function validateImage(file: Blob): Promise<void> {
+  await withDecodedImage(file, () => undefined);
+}
+
+async function withDecodedImage<T>(file: Blob, useImage: (image: HTMLImageElement) => T | Promise<T>): Promise<T> {
   const url = URL.createObjectURL(file);
   try {
     const image = new Image();
@@ -36,6 +40,13 @@ export async function compressImage(file: Blob, maxDimension: number, quality = 
       image.onerror = () => reject(new Error("Billedet kunne ikke læses. Prøv et JPG-, PNG- eller WebP-billede."));
       image.src = url;
     });
+    return await useImage(image);
+  } finally { URL.revokeObjectURL(url); }
+}
+
+/** Bound decoded image memory before editing, preferring WebP with a PNG fallback. */
+export async function compressImage(file: Blob, maxDimension: number, quality = 0.82): Promise<Blob> {
+  return withDecodedImage(file, async (image) => {
     const size = compressedImageSize(image.naturalWidth, image.naturalHeight, maxDimension);
     const canvas = document.createElement("canvas");
     canvas.width = size.width;
@@ -45,5 +56,5 @@ export async function compressImage(file: Blob, maxDimension: number, quality = 
     context.imageSmoothingQuality = "high";
     context.drawImage(image, 0, 0, size.width, size.height);
     return await encodeImageCanvas(canvas, quality);
-  } finally { URL.revokeObjectURL(url); }
+  });
 }

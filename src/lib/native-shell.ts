@@ -15,9 +15,10 @@ export async function initNativeShell() {
 
   App.addListener("backButton", ({ canGoBack }) => {
     const action = backButtonAction({
-      dialogOpen: !!document.querySelector('[role="dialog"][data-state="open"]'),
+      dialogOpen: !!document.querySelector('[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"]'),
       pathname: window.location.pathname,
       canGoBack,
+      routerIndex: typeof window.history.state?.idx === "number" ? window.history.state.idx : 0,
     });
     if (action === "close-dialog") document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     else if (action === "exit") App.exitApp();

@@ -14,4 +14,10 @@ describe("Android back button", () => {
   it("exits when there is no history", () => {
     expect(backButtonAction({ dialogOpen: false, pathname: "/virksomhed", canGoBack: false })).toBe("exit");
   });
+  it("returns from login when WebView history is empty but the router has a previous page", () => {
+    expect(backButtonAction({ dialogOpen: false, pathname: "/log-ind", canGoBack: false, routerIndex: 1 })).toBe("back");
+  });
+  it("still exits at the role choice even when router history exists", () => {
+    expect(backButtonAction({ dialogOpen: false, pathname: "/app", canGoBack: false, routerIndex: 2 })).toBe("exit");
+  });
 });

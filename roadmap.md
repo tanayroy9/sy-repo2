@@ -1,5 +1,12 @@
 # Master Audit & Refinement — Serviceydere.dk
 
+## 7. nov. — iOS/Android og kompakte mobilvinduer
+- [x] Kompakt rollevalg og alle tre loginindgange afprøvet ved 320/390/844/820 px. Android-tilbage respekterer routerhistorik og åbne bekræftelsesvinduer; seks regeltests bestået. Faktisk native tilbageknap kræver telefon.
+- [x] Billedgenåbning bruger almindelig billedafkodning uden createImageBitmap. Valgfri luftregistrering tåler canvasfejl; gemmefejl vises og kan prøves igen. Autentificeret upload, retry og originalgenåbning efter remount bestået; testpreview fjernet.
+- [x] Fire skærmstørrelser inkl. vandret telefon: ingen vandret overflow, billedvinduets bundknapper synlige. Syv kundesider og medarbejderens Min dag afprøvet ved 390/820 px uden runtimefejl. 34 regressionstests bestået.
+- [ ] Fysisk iPhone/Android: splash, tastatur og systembjælker kræver adgang til enheder; kan ikke verificeres i browser.
+- [ ] Hele ejerpanelet og medarbejderruter med data: den aktive konto har ingen virksomhed eller tildelte ruter; fuld klik-/gemmegennemgang kræver en egnet konto med data.
+
 ## 6. nov. — Mobilvenlig billedbehandling
 - [x] Fælles profil-/logoværktøj har navngivne zoom/drej-kontroller, fast handlingslinje og behandlings-/uploadstatus; store rasterfiler komprimeres til højst 2400 px før tilpasning. Originalen genbruges i hukommelsen og genkomprimeres ikke ved gentagen tilpasning; rasteruploads skal lykkes som WebP, SVG forbliver SVG. 12 tests bestået; PNG-upload → WebP (19 KB), to gemninger og genåbning efter reload testet i Klar Vinduer samt 320/390/820/844/1280 px. Gamle billeder massekonverteres ikke; kundens/medarbejderens egne gemninger ikke særskilt testet.
 

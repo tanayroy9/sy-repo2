@@ -1,5 +1,31 @@
-import { describe, expect, it, vi } from "vitest";
-import { compressedImageSize, encodeImageCanvas, imageFileExtension } from "./image-compression";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { compressedImageSize, encodeImageCanvas, imageFileExtension, validateImage } from "./image-compression";
+
+afterEach(() => vi.unstubAllGlobals());
+
+describe("image decoding compatibility", () => {
+  it("validates images without createImageBitmap and releases the temporary URL", async () => {
+    vi.stubGlobal("createImageBitmap", undefined);
+    const revoke = vi.fn();
+    vi.stubGlobal("URL", { createObjectURL: () => "blob:test", revokeObjectURL: revoke });
+    vi.stubGlobal("Image", class {
+      onload?: () => void;
+      set src(_url: string) { this.onload?.(); }
+    });
+    await expect(validateImage(new Blob(["image"], { type: "image/png" }))).resolves.toBeUndefined();
+    expect(revoke).toHaveBeenCalledWith("blob:test");
+  });
+  it("rejects unreadable images and releases their URL", async () => {
+    const revoke = vi.fn();
+    vi.stubGlobal("URL", { createObjectURL: () => "blob:invalid", revokeObjectURL: revoke });
+    vi.stubGlobal("Image", class {
+      onerror?: () => void;
+      set src(_url: string) { this.onerror?.(); }
+    });
+    await expect(validateImage(new Blob(["invalid"]))).rejects.toThrow("Billedet kunne ikke læses");
+    expect(revoke).toHaveBeenCalledWith("blob:invalid");
+  });
+});
 
 describe("image compression dimensions", () => {
   it("bounds a large phone photo before editing", () => {

@@ -29,6 +29,7 @@ export function ImageCropDialog({ file, shape = "circle", outputSize = 512, onCa
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
   const [loadError, setLoadError] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [encoding, setEncoding] = useState(false);
   const [bounds, setBounds] = useState({ x: 0, y: 0, width: 1, height: 1 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -41,6 +42,7 @@ export function ImageCropDialog({ file, shape = "circle", outputSize = 512, onCa
     if (!file) { setImg(null); return; }
     setImg(null);
     setLoadError(false);
+    setSaveError(false);
     setEncoding(false);
     setView(VIEW);
     setRotation(0);
@@ -54,10 +56,12 @@ export function ImageCropDialog({ file, shape = "circle", outputSize = 512, onCa
       canvas.height = image.naturalHeight;
       const ctx = canvas.getContext("2d");
       let area = { x: 0, y: 0, width: image.naturalWidth, height: image.naturalHeight };
-      if (ctx) {
-        ctx.drawImage(image, 0, 0);
-        area = visibleImageBounds(ctx.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height);
-      }
+      try {
+        if (ctx) {
+          ctx.drawImage(image, 0, 0);
+          area = visibleImageBounds(ctx.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height);
+        }
+      } catch { /* Padding detection is optional; retain the full image on constrained devices. */ }
       setBounds(area); setImg(image); setZoom(1); setOffset({ x: 0, y: 0 });
     };
     image.onerror = () => { if (!cancelled) setLoadError(true); };
@@ -125,18 +129,20 @@ export function ImageCropDialog({ file, shape = "circle", outputSize = 512, onCa
   const save = async () => {
     if (!img || view <= 0 || busy || encoding) return;
     setEncoding(true);
+    setSaveError(false);
+    try {
     const canvas = document.createElement("canvas");
     canvas.width = outputSize;
     canvas.height = outputSize;
     const ctx = canvas.getContext("2d");
-    if (!ctx) { setEncoding(false); setLoadError(true); return; }
+    if (!ctx) throw new Error("Canvas unavailable");
     const s = outputSize / view;
     ctx.imageSmoothingQuality = "high";
     ctx.translate((view / 2 + offset.x) * s, (view / 2 + offset.y) * s);
     ctx.rotate(rotation * Math.PI / 180);
     ctx.drawImage(img, bounds.x, bounds.y, bounds.width, bounds.height, -w * s / 2, -h * s / 2, w * s, h * s);
-    try { onDone(await encodeImageCanvas(canvas, quality)); }
-    catch { setLoadError(true); }
+    onDone(await encodeImageCanvas(canvas, quality));
+    } catch { setSaveError(true); }
     finally { setEncoding(false); }
   };
 
@@ -185,7 +191,8 @@ export function ImageCropDialog({ file, shape = "circle", outputSize = 512, onCa
         </div>
           <Button type="button" variant="ghost" className="min-h-11" disabled={!img} onClick={() => { if (!img) return; setZoom(fitZoom); setOffset({ x: 0, y: 0 }); }}><RotateCcw className="mr-1.5 h-4 w-4" />{hasOriginal ? "Vis hele billedet" : "Centrér billedet"}</Button>
         </div>
-          <div className="relative z-10 flex shrink-0 gap-2 border-t border-border bg-background pt-3">
+          {saveError && <p role="alert" className="shrink-0 text-sm text-destructive">Billedet kunne ikke gemmes. Prøv igen, eller vælg et andet billede.</p>}
+          <div className="relative z-10 flex shrink-0 gap-2 border-t border-border bg-background pt-3 pb-[env(safe-area-inset-bottom)]">
             <Button type="button" variant="outline" className="min-h-11 flex-1" disabled={busy || encoding} onClick={onCancel}>Annullér</Button>
             <Button type="button" className="min-h-11 flex-1" onClick={save} disabled={!img || busy || encoding}>{busy || encoding ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{encoding ? "Behandler…" : "Uploader…"}</> : "Brug billede"}</Button>
           </div>

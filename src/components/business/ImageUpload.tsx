@@ -5,7 +5,7 @@ import { ImageCropDialog } from "@/components/shared/ImageCropDialog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { originalImageUrl } from "@/lib/profile-image-source";
-import { compressImage, imageFileExtension } from "@/lib/image-compression";
+import { compressImage, imageFileExtension, validateImage } from "@/lib/image-compression";
 
 interface Props {
   bucket?: string;
@@ -30,8 +30,7 @@ const fetchImage = async (url: string): Promise<Blob> => {
   const response = await fetch(url);
   if (!response.ok) throw new Error("Billedet kunne ikke hentes");
   const blob = await response.blob();
-  const bitmap = await createImageBitmap(blob);
-  bitmap.close();
+  await validateImage(blob);
   return blob;
 };
 
