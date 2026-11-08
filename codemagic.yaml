@@ -32,11 +32,12 @@ workflows:
       cocoapods: default
 
     scripts:
-
-      - name: Install dependencies
+      - name: Install Bun
         script: |
-          npm ci || npm install
-
+          curl -fsSL https://bun.sh/install | bash
+          echo 'export BUN_INSTALL="$HOME/.bun"' >> "$CM_ENV"
+          echo 'export PATH="$HOME/.bun/bin:$PATH"' >> "$CM_ENV"
+    
       - name: Build web and sync Capacitor
         script: |
           npm run app:release
